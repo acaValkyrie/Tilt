@@ -9,13 +9,15 @@ public class InstantiateWall : MonoBehaviour{
 [SerializeField] private GameObject ball;
 private const int STAGE_WIDTH = 16;
 private const int STAGE_HEIGHT = 9;
-private static int HRZ_BLOCK_COUNT = 16;//horizontal block count
-private static int VRT_BLOCK_COUNT = 9;
+
+private static int HRZ_BLOCK_COUNT;//horizontal block count
+private static int VRT_BLOCK_COUNT;
+public static Vector2 GetStageBlockSize() { return new Vector2(HRZ_BLOCK_COUNT, VRT_BLOCK_COUNT);}
 
 // Start is called before the first frame update
 void Start() {
   Vector3 blockScale = wallBlock.transform.localScale;
-  Vector3 ballScale = blockScale * 0.7f;
+  Vector3 ballScale = blockScale * 0.9f;
   ball.transform.localScale = ballScale;
   Instantiate(ball, Vector2.zero, Quaternion.identity);
 
@@ -23,12 +25,8 @@ void Start() {
   VRT_BLOCK_COUNT = (int)(STAGE_HEIGHT / blockScale.y);
   byte[,] arr = new byte[HRZ_BLOCK_COUNT, VRT_BLOCK_COUNT];
   ArrayClear(arr);
-  arr[2, 2] = 1;
-  arr[3, 2] = 1;
-  arr[4, 2] = 1;
-  arr[5, 2] = 1;
-  arr[6, 2] = 1;
-
+  MazeScript.BuildMaze();
+  arr = MazeScript.GetMazeArr();
   ArrayToStage(arr);
 }
 
@@ -41,12 +39,6 @@ void ArrayClear(byte[,] array) {
 }
 
 void ArrayToStage(byte[,] array) {
-  for(int y = 0; y < VRT_BLOCK_COUNT; y++) {
-    for (int x = 0; x < HRZ_BLOCK_COUNT; x++) {
-      Debug.Log(array[x, y]);
-    }
-  }
-
   Vector3 blockScale = wallBlock.transform.localScale;
   for (int xBlockCount = 0; xBlockCount < HRZ_BLOCK_COUNT; xBlockCount++) {
     for (int yBlockCount = 0; yBlockCount < VRT_BLOCK_COUNT; yBlockCount++) {
